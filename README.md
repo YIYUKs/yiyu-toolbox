@@ -16,6 +16,10 @@ This project is a refactor and enhancement of the "AI Magic Eraser" (AI魔法消
 - **Batch Processing**: 
     - efficiently process multiple images with the same watermark position.
     - **Workflow**: Load one image -> Draw Mask -> Click 'Batch Process' -> Select Folder.
+- **Video Auto Shot Splitter**:
+    - **Batch Processing**: Supports batch processing of all videos in a folder.
+    - **Multiple Modes**: Extract start, middle, or end frames, or automatically split into 20 evenly distributed snapshots.
+    - **Smart Saving**: Automatically categorizes and saves snapshots and video files.
 - **Portable Design**: Can be packaged into a standalone EXE (Windows).
 
 ## Installation
@@ -52,6 +56,19 @@ python src/demo.py
 - **Move/Zoom**: Scroll to zoom, Middle-click to drag.
 - **Start**: Click the Green button to process the single image.
 - **Batch Mode**: Click the Blue button, select a folder, allow it to load the first image, draw the mask, then click Start.
+
+- **Video Splitter**:
+    1. Switch to the **"Video Auto Shot Splitter"** tab.
+    2. Click **"Select Folder"** (Blue button) to choose the directory containing videos.
+    3. Select a Snapshot Mode (Start/Middle/End/Average).
+    4. Click **"Start Split & Save"** (Green button) to process all videos automatically.
+
+## Output Directories
+
+To keep the source folder clean, all processing results are saved in automatically created subdirectories:
+
+- **Single/Batch Image Inpainting**: Results saved in `images_output_yiyu_box` inside the source folder.
+- **Video Splitter**: Results saved in `videos_output_yiyu_box` inside the source video folder.
 
 ## Acknowledgements
 

@@ -35,7 +35,7 @@ class BatchWorkThread(QThread):
                 self.finished_signal.emit(f"Error: Folder not found {self.folder_path}")
                 return
 
-            output_dir = os.path.join(self.folder_path, "output_yiyu_box")
+            output_dir = os.path.join(self.folder_path, "images_output_yiyu_box")
             os.makedirs(output_dir, exist_ok=True)
 
             # Load Model

@@ -24,6 +24,7 @@ python -m PyInstaller --noconfirm --onedir --windowed --clean ^
     --hidden-import "cv2" ^
     --hidden-import "numpy" ^
     --hidden-import "PyQt5" ^
+    --hidden-import "scenedetect" ^
     src/demo.py
 
 if %errorlevel% neq 0 (

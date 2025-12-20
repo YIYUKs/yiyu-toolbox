@@ -1,6 +1,3 @@
-# uncompyle6 version 3.9.3
-# Python bytecode version base 3.6 (3379)
-# Decompiled from: Python 3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]
 import os
 import sys
 
@@ -11,13 +8,12 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 import torch
 
 from DemoUI import Ui_Form
-from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox
-from PyQt5 import QtWidgets # Still needed if code uses QtWidgets.X
-from PyQt5 import QtCore
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QMessageBox, QTabWidget, QVBoxLayout
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtGui import QPixmap, QIcon
 import cv2, numpy as np
 from contact import Ui_contact
-from PyQt5.QtGui import QIcon
+from video_ui import VideoSplitterWidget
 
 from batch_processor import BatchWorkThread
 
@@ -25,20 +21,69 @@ class MainWindow(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = Ui_Form()
-        self.ui.setupUi(self)
+        self.setWindowTitle("乙羽的工具箱")
         self.setWindowIcon(QIcon("./resources/icon.png"))
+        self.resize(1050, 800)
         
+        # Main Layout (Tabbed)
+        self.main_layout = QVBoxLayout(self)
+        self.tabs = QTabWidget()
+        self.main_layout.addWidget(self.tabs)
         
-        # Connect Slider
+        # --- Tab 1: Watermark Remover ---
+        self.tab_watermark = QWidget()
+        self.ui = Ui_Form()
+        self.ui.setupUi(self.tab_watermark)
+        self.tabs.addTab(self.tab_watermark, "AI去水印")
+        
+        # UI FIX: Hide the old header layout elements (Title and Fake Tabs)
+        # Because we can't easily remove from layout without affecting indices, 
+        # we just hide the widgets.
+        if hasattr(self.ui, 'header_layout'):
+             # We iterate to find widgets? Or just hide specific ones we know.
+             if hasattr(self.ui, 'btn_tab_watermark'): self.ui.btn_tab_watermark.hide()
+             if hasattr(self.ui, 'btn_tab_dev'): self.ui.btn_tab_dev.hide()
+             if hasattr(self.ui, 'label_title'): self.ui.label_title.hide()
+             
+             # Also hide the header layout container if possible? 
+             # It's a layout, not a widget. 
+             # But hiding contents should be enough to collapse it if layout allows.
+             # self.ui.header_layout.setEnabled(False) 
+        
+        # --- Tab 2: Video Splitter ---
+        self.tab_video = VideoSplitterWidget()
+        self.tabs.addTab(self.tab_video, "视频自动镜头分割")
+        
+        # --- Tab 3: Reserved ---
+        self.tab_reserved = QWidget()
+        layout_res = QVBoxLayout(self.tab_reserved)
+        lbl_res = QtWidgets.QLabel("下一个新功能开发中...")
+        lbl_res.setAlignment(QtCore.Qt.AlignCenter)
+        lbl_res.setStyleSheet("font-size: 24px; color: #888;")
+        layout_res.addWidget(lbl_res)
+        self.tabs.addTab(self.tab_reserved, "更多功能 (开发中)")
+        
+        # Connect Signals for Tab 1 (Manual connection required due to re-parenting)
         self.ui.slider_brush.valueChanged.connect(self.update_brush_size)
-        
-        # Manual connection to avoid auto-connect duplication
         self.ui.btn_batch.clicked.connect(self.start_batch_mode)
+        self.ui.btn_org.clicked.connect(self.on_btn_org_clicked)
+        self.ui.btn_org_2.clicked.connect(self.on_btn_org_2_clicked)
+        
+        # Note: 'on_pushButton_clicked' seems to be missing from DemoUI? 
+        # Checking DemoUI.py, there is NO pushButton. 
+        # The original code might have had it, or it was removed/renamed.
+        # But wait, logic refers to 'Ui_contact'.
+        # If DemoUI doesn't have it, we skip it.
+        # Original demo.py had 'on_pushButton_clicked'. Let's check if ui has 'pushButton'.
+        if hasattr(self.ui, 'pushButton'):
+             self.ui.pushButton.clicked.connect(self.on_pushButton_clicked)
         
         # Set initial brush size
         self.ui.widget.brush_size = self.ui.slider_brush.value()
         self.ui.label_brush.setText(f"画笔大小: {self.ui.widget.brush_size}")
+        
+        # Initialize references
+        self.batch_folder_path = None
 
     def update_brush_size(self, value):
         self.ui.widget.brush_size = value
@@ -89,12 +134,8 @@ class MainWindow(QWidget):
         if self.load_image_from_path(first_img_path):
             self.batch_folder_path = folder_path
             self.ui.lineEdit.setText(f"批量模式已就绪。请绘制水印区域，然后点击'开始去水印'。")
-            QMessageBox.information(self, "操作提示", 
-                "已自动加载文件夹中的第一张图片。\n\n"
-                "1. 请在当前图片上绘制出水印区域。\n"
-                "2. 点击【开始去水印】按钮。\n"
-                "3. 程序将把此蒙版应用到该文件夹下的所有图片。\n\n"
-                "⚠️ 注意：批量处理仅适用于同尺寸、同比例且水印位置一致的图片！")
+            # User Feedback: No popup, just start drawing.
+            # Information is already in self.ui.lineEdit and '使用说明.txt'
         else:
              QMessageBox.warning(self, "警告", "无法加载第一张图片！")
 
@@ -107,8 +148,8 @@ class MainWindow(QWidget):
         self.ui.btn_batch.setEnabled(True)
         self.ui.btn_org.setEnabled(True)
         self.ui.btn_org_2.setEnabled(True)
+        self.ui.widget.drawing1 = True # Fix: Re-enable drawing
         self.batch_folder_path = None # Exit batch mode
-        QtWidgets.QMessageBox.information(self, "完成", msg)
 
     @QtCore.pyqtSlot()
     def on_btn_org_clicked(self):
@@ -125,6 +166,10 @@ class MainWindow(QWidget):
     @QtCore.pyqtSlot()
     def on_btn_org_2_clicked(self):
         # Common: Save Mask
+        if not self.ui.widget.image:
+             QMessageBox.warning(self, "提示", "请先加载图片")
+             return
+
         self.ui.widget.gray_img.save("mask.png")
         self.ui.widget.drawing1 = False
         self.ui.btn_org_2.setEnabled(False)
@@ -145,17 +190,7 @@ class MainWindow(QWidget):
              self.ui.widget.btn_org_2 = self.ui.btn_org_2
              self.ui.widget.btn_org = self.ui.btn_org
              self.ui.widget.lineEdit = self.ui.lineEdit
-             # Re-enable batch button in single mode callback? 
-             # Original code manages btn_org/btn_org_2 in thread callback, but not btn_batch.
-             # We might need to ensure btn_batch is re-enabled if single mode finishes.
-             # Single mode completion logic is in Label.timeStop (via signal).
-             # We need to updating label.py to re-enable btn_batch too if we disable it here.
-             # For now, let's NOT disable btn_batch for single mode or update label.py.
-             # Update: I'll disable it for safety, and rely on user re-opening app or fix label.py.
-             # Better: Update label.py? Or just not disable btn_batch in single mode?
-             # Let's disable it to prevent chaos.
-             # But label.py's timeStop needs to re-enable it.
-             # I can pass btn_batch to widget too.
+             # Pass btn_batch for re-enable in Label.timeStop if needed, or improved logic
              self.ui.widget.btn_batch = self.ui.btn_batch
              
              self.ui.widget.thread.start()

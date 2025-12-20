@@ -1,5 +1,6 @@
 torch
 torchvision
 opencv-python
+scenedetect[opencv]
 PyQt5
 numpy

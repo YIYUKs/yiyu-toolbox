@@ -121,7 +121,25 @@ class WorkThread(QThread):
         print(f"process time: {(time.time() - start) * 1000}ms")
         print(res_np_img)
         torch.cuda.empty_cache()
-        cv2.imencode(".jpg", res_np_img)[1].tofile(f"{os.path.basename(self.image_path)}_magic.png")
+        # Save to: <OriginalDir>/images_output_yiyu_box/<Filename>_magic.png
+        original_dir = os.path.dirname(os.path.abspath(self.image_path))
+        output_dir = os.path.join(original_dir, "images_output_yiyu_box")
+        os.makedirs(output_dir, exist_ok=True)
+        
+        save_name = f"{os.path.basename(self.image_path)}_magic.png"
+        save_path = os.path.join(output_dir, save_name)
+        
+        # Use imencode for unicode path support
+        success, encoded_img = cv2.imencode(".png", res_np_img)
+        if success:
+             encoded_img.tofile(save_path)
+             # Update self.image_path so UI reloads from new path? 
+             # Wait, Label.timeStop reloads from self.image_path. 
+             # We need to ensure timeStop looks at the right place. 
+             # But WorkThread doesn't sync back to Label directly other than file existence?
+             # Actually, timeStop logic assumes file is in CWD or relative.
+             # We must update how timeStop resolves the file.
+             pass
 
     def run(self):
         self.process()
@@ -316,9 +334,17 @@ class Label(QtWidgets.QWidget):
             cv2.imwrite("gray.png", gray0)
             self.gray_img = QPixmap("gray.png")
             
-            self.image = QPixmap(f"{os.path.basename(self.image_path)}_magic.png")
-            self.image_path = f"{os.path.basename(self.image_path)}_magic.png"
-            self.thread.image_path = self.image_path
+            # Resolve new image path
+            original_dir = os.path.dirname(os.path.abspath(self.image_path))
+            save_name = f"{os.path.basename(self.image_path)}_magic.png"
+            new_path = os.path.join(original_dir, "images_output_yiyu_box", save_name)
+
+            if os.path.exists(new_path):
+                 self.image = QPixmap(new_path)
+                 self.image_path = new_path # Update current path to result
+                 self.thread.image_path = self.image_path
+            else:
+                 print(f"Error: Result file not found at {new_path}")
             
             # Reset view? Maybe keep it.
             self.update()
@@ -329,5 +355,7 @@ class Label(QtWidgets.QWidget):
                  self.btn_org_2.setEnabled(True)
             if hasattr(self, 'btn_org'):
                  self.btn_org.setEnabled(True)
+            if hasattr(self, 'btn_batch'):
+                 self.btn_batch.setEnabled(True)
             if hasattr(self, 'lineEdit'):
                  self.lineEdit.setText(f"转换完成，保存为【{os.path.basename(self.image_path)}】")
