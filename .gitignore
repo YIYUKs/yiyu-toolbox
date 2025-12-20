@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Temp Images (Runtime generated)
+gray.png
+mask.png
+input.png
+*_magic.png
+output_yiyu_box/
+
+# IDEs
+.idea/
+.vscode/
+
+# Large Files
+# GitHub Limit is 100MB. The model is ~200MB.
+# You need Git LFS to push the model, or uncomment the next line to ignore it.
+# model/big-lama.pt
