@@ -25,3 +25,5 @@ output_yiyu_box/
 
 # Portable Build
 yiyu_toolbox_portable/
+build_launcher/
+nuitka-crash-report.xml
