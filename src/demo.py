@@ -27,6 +27,7 @@ class MainWindow(QWidget):
         super().__init__(parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+        self.setWindowIcon(QIcon("./resources/icon.png"))
         
         
         # Connect Slider
@@ -166,7 +167,7 @@ class my_Ui_contact(QWidget):
         super().__init__(parent)
         self.ui = Ui_contact()
         self.ui.setupUi(self)
-        self.setWindowIcon(QIcon("./resources/ico.jpg"))
+        self.setWindowIcon(QIcon("./resources/icon.png"))
 
 
 if __name__ == "__main__":
