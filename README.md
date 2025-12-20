@@ -6,6 +6,8 @@ A local, offline AI-powered watermark removal tool based on the LaMa (Large Mask
 
 This project is a refactor and enhancement of the "AI Magic Eraser" (AI魔法消除小工具) originally by **zhaoyun007** from 52pojie.cn.
 
+Future features will be added based on my personal needs and integrated into this tool.
+
 ## Features
 
 - **Offline AI Inpainting**: Uses the LaMa model for high-quality object and watermark removal without internet access.
@@ -56,6 +58,12 @@ python src/demo.py
 - **Move/Zoom**: Scroll to zoom, Middle-click to drag.
 - **Start**: Click the Green button to process the single image.
 - **Batch Mode**: Click the Blue button, select a folder, allow it to load the first image, draw the mask, then click Start.
+    
+    **Detailed Batch Instructions**:
+    1. The program loads the first image of the folder.
+    2. **Draw Mask**: Paint over the watermark area on the displayed image (Left drag to paint, Wheel to zoom, Middle click to pan).
+    3. **Start**: Click the Green "Start" button.
+    4. The program will apply this mask to ALL images in the selected folder.
 
 - **Video Splitter**:
     1. Switch to the **"Video Auto Shot Splitter"** tab.
