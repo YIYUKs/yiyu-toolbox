@@ -45,6 +45,15 @@
     python src/demo.py
     ```
 
+## 构建便携版 (EXE)
+
+如果您希望生成一个可以分发给通过、不需要安装 Python 就能运行的绿色便携版：
+
+1.  确保 `resources` 目录下存在 `icon.ico` 文件（可选，用于生成带图标的 EXE）。
+2.  双击运行 `create_portable_version.bat`。
+3.  等待脚本执行完毕，将会在当前目录下生成 `yiyu_toolbox_portable` 文件夹。
+4.  该文件夹即为最终成品，直接运行其中的 `乙羽的工具箱.exe` 即可。
+
 ## 使用指南
 
 - **单图处理**:

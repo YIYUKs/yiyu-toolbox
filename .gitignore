@@ -22,3 +22,6 @@ output_yiyu_box/
 # GitHub Limit is 100MB. The model is ~200MB.
 # You need Git LFS to push the model, or uncomment the next line to ignore it.
 # model/big-lama.pt
+
+# Portable Build
+yiyu_toolbox_portable/
