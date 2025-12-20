@@ -23,22 +23,27 @@ git commit -m "Mirror sync: %timestamp%"
 echo [3/3] 正在推送到 GitHub...
 git push origin main
 
-if errorlevel 1 (
-    echo.
-    echo ==========================================
-    echo [错误] 推送失败！
-    echo ==========================================
-    echo 可能原因:
-    echo 1. 网络连接问题 (Could not resolve host) - 请检查代理或网络。
-    echo 2. 远程仓库权限问题。
-    echo.
-    echo 请尝试手动运行: git push origin main
-    echo.
-    pause
-    exit /b 1
-) else (
-    echo.
-    echo [成功] 同步完成！
-    pause
-    exit /b 0
-)
+if errorlevel 1 goto sync_fail
+
+echo.
+echo ==========================================
+echo [成功] 同步完成！
+echo 远程仓库已与本地保持一致。
+echo ==========================================
+goto end_pause
+
+:sync_fail
+echo.
+echo ==========================================
+echo [错误] 推送失败！
+echo ==========================================
+echo 可能原因:
+echo 1. 网络连接问题 (Could not resolve host) - 请检查代理或网络。
+echo 2. 远程仓库权限问题。
+echo.
+echo 请尝试手动运行: git push origin main
+
+:end_pause
+echo.
+echo 按任意键退出...
+pause >nul
