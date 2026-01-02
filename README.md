@@ -2,87 +2,113 @@
 
 [中文文档](README_CN.md)
 
-A local, offline AI-powered watermark removal tool based on the LaMa (Large Mask Inpainting) model. 
+A local, offline AI-powered tool for watermark removal, background removal, video splitting, and image upscaling based on the LaMa (Large Mask Inpainting) model.
 
-This project is a refactor and enhancement of the "AI Magic Eraser" (AI魔法消除小工具) originally by **zhaoyun007** from 52pojie.cn.
+This project is a refactor and enhancement of the "AI Magic Eraser" originally by **zhaoyun007**.
 
-Future features will be added based on my personal needs and integrated into this tool.
+Future features will be integrated based on personal requirements.
 
-## Features
+- **Premium UI System**:
+    - **Dark Mode**: Ergonomic dark theme for professional work and reduced eye strain.
+    - **Dual Progress Bars**: Real-time monitoring of both "Total Progress" and "Current Item Progress". No more "black box" waiting.
+    - **Consistent Layout**: Unified vertical flow across all modules for a seamless user experience.
+- **Portability**: Supports packaging as a fully standalone "Green Version" EXE.
 
-- **Offline AI Inpainting**: Uses the LaMa model for high-quality object and watermark removal without internet access.
-- **Interactive UI**:
-    - **Brush Tool**: Customizable brush size for precise masking.
-    - **Zoom & Pan**: Mouse wheel to zoom, Middle Click (or Right Click) to pan the image.
-    - **Quick Undo**: Right-click to instantly clear the current mask.
-- **Batch Processing**: 
-    - efficiently process multiple images with the same watermark position.
-    - **Workflow**: Load one image -> Draw Mask -> Click 'Batch Process' -> Select Folder.
-- **Video Auto Shot Splitter**:
-    - **Batch Processing**: Supports batch processing of all videos in a folder.
-    - **Multiple Modes**: Extract start, middle, or end frames, or automatically split into 20 evenly distributed snapshots.
-    - **Smart Saving**: Automatically categorizes and saves snapshots and video files.
-- **Portable Design**: Can be packaged into a standalone EXE (Windows).
+## 🚀 Release v1.0 (Latest)
 
-## Installation
+**Version 1.0.0 (2026-01-02)**
+- **UI Redesign**: Brand new Dark Mode skin with a dedicated `StyleManager`.
+- **Feedback Loop**: Introduced the Dual Progress Bar mechanism for better task transparency.
+- **Stability Fixes**: Refined portable build scripts to resolve DLL relocation issues (WinError 1114).
+- **UX Refinement**: Streamlined the Watermark tab layout for more intuitive operation.
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/yourusername/yiyus-toolbox.git
-    cd yiyus-toolbox
-    ```
+## Installation & Run
 
-2.  **Install Dependencies**:
-    Requires Python 3.8+ (Tested on 3.11).
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *Note: You need `torch`, `opencv-python`, and `PyQt5`.*
+1. **Environment**:
+   Python 3.8+ (Development environment: 3.11).
+   ```bash
+   pip install -r requirements.txt
+   ```
+   *Main dependencies: `torch`, `opencv-python`, `PyQt5`*
 
-3.  **Run dependencies**:
-    Ensure you have the LaMa model file `big-lama.pt` in the `model/` directory.
+2. **Model Files**:
+   Ensure `model/big-lama.pt` exists.
 
-## Usage
+3. **Start**:
+   ```bash
+   # Windows users can run directly:
+   run_source.bat
+   
+   # Or:
+   python src/demo.py
+   ```
 
-### Run from Source
-```bash
-run_source.bat
-# OR
-python src/demo.py
-```
+## Build Portable Version (EXE)
 
-### Operations
-- **Load Image**: Click the Orange button.
-- **Draw Mask**: Left-click and drag to cover the watermark.
-- **Adjust Brush**: Use the slider.
-- **Move/Zoom**: Scroll to zoom, Middle-click to drag.
-- **Start**: Click the Green button to process the single image.
-- **Batch Mode**: Click the Blue button, select a folder, allow it to load the first image, draw the mask, then click Start.
-    
-    **Detailed Batch Instructions**:
-    1. The program loads the first image of the folder.
-    2. **Draw Mask**: Paint over the watermark area on the displayed image (Left drag to paint, Wheel to zoom, Middle click to pan).
-    3. **Start**: Click the Green "Start" button.
-    4. The program will apply this mask to ALL images in the selected folder.
+To generate a standalone green portable version:
+
+1. Ensure `resources/icon.ico` exists (optional for icon).
+2. Run `create_portable_version.bat`.
+3. Wait for completion; `yiyu_toolbox_portable` folder will be generated.
+4. Run `乙羽的工具箱.exe` inside that folder.
+
+## Usage Guide
+
+- **Auto Watermark Removal**:
+    1. Click **"Select Image"** (Orange button).
+    2. Paint the removal area. Adjust brush size with the slider, zoom/pan with the mouse.
+    3. Click **"Start Removal"** (Green button).
+
+- **Batch Processing**:
+    1. Click **"Batch Processing (Fixed Position)"** (Blue button).
+    2. Select image folder.
+    3. Draw the mask on the first loaded image.
+    4. Click **"Start Removal"**.
+    *Note: Only for images with identical resolution and watermark position.*
 
 - **Video Splitter**:
-    1. Switch to the **"Video Auto Shot Splitter"** tab.
-    2. Click **"Select Folder"** (Blue button) to choose the directory containing videos.
-    3. Select a Snapshot Mode (Start/Middle/End/Average).
-    4. Click **"Start Split & Save"** (Green button) to process all videos automatically.
+    1. Switch to the **"Get Video Scenes"** tab.
+    2. Click **"Select Folder"** (Blue button).
+    3. Choose a mode (Start/Middle/End/Average).
+    4. Click **"Start Split & Save"** (Green button).
+
+- **90-Point Automatic Matting**:
+    1. Switch to the **"90-Point Automatic Matting"** tab.
+    2. Select image or folder.
+    3. Select **Edge Strength** (High is recommended).
+    4. Click **"Auto Matting"**. Results saved as transparent PNG.
+
+- **90-Point Image Upscaling**:
+    1. Switch to the **"90-Point Image Upscaling"** tab.
+    2. Select image or folder.
+    3. Choose **AI Model**: "General" for photos, "Anime" for illustrations.
+    4. Click **"AI One-Click Upscale"**. Initial run will download weights.
 
 ## Output Directories
 
-To keep the source folder clean, all processing results are saved in automatically created subdirectories:
+To keep folders clean, results are saved in auto-created subdirectories:
 
-- **Single/Batch Image Inpainting**: Results saved in `images_output_yiyu_box` inside the source folder.
-- **Video Splitter**: Results saved in `videos_output_yiyu_box` inside the source video folder.
+- **Watermark Removal**: Saved in `images_output_yiyu_box`.
+- **Video Splitter**: Saved in `videos_output_yiyu_box`.
+- **AI Upscaling**: Saved in `upscale_output_yiyu_box`.
 
-## Acknowledgements
+## Acknowledgements & Open Source Credits
 
-- Original Author: **zhaoyun007** (52pojie.cn)
-- Model: [LaMa (Resolution-robust Large Mask Inpainting with Fourier Convolutions)](https://github.com/advimman/lama)
+This project integrates the following outstanding open-source projects:
+
+- **Core Models**:
+    - [LaMa](https://github.com/advimman/lama): Powerful frequency-aware AI inpainting.
+    - [BiRefNet](https://github.com/ZhengPeng7/BiRefNet): High-precision matting network.
+    - [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN): State-of-the-art super-resolution.
+- **Libraries**:
+    - [PyQt5](https://www.riverbankcomputing.com/software/pyqt/): Python GUI framework.
+    - [PyTorch](https://pytorch.org/): Deep learning inference engine.
+    - [OpenCV](https://opencv.org/): Image processing & Guided Filter algorithms.
+    - [PySceneDetect](https://github.com/Breakthrough/PySceneDetect): Video scene detection.
+    - [rembg](https://github.com/danielgatis/rembg): Background removal wrapper.
+- **Credits**:
+    - **zhaoyun007** (52pojie.cn)
 
 ## License
 
-This project is for educational and personal use. Please respect the license of the original LaMa model and the original author.
+Personal and educational use only. Please respect the licenses of the original models and authors.

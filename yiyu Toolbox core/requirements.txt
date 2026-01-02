@@ -1,0 +1,9 @@
+torch
+torchvision
+opencv-python
+scenedetect[opencv]
+PyQt5
+numpy
+rembg
+Pillow
+onnxruntime
