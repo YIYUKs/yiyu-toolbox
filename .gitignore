@@ -19,9 +19,12 @@ output_yiyu_box/
 .vscode/
 
 # Large Files
-# GitHub Limit is 100MB. The model is ~200MB.
-# You need Git LFS to push the model, or uncomment the next line to ignore it.
-# model/big-lama.pt
+# GitHub Limit is 100MB. The models and Blender files exceed this.
+# You need Git LFS to push these, or keep them for manual Release assets.
+yiyu Toolbox core/model/*.pt
+yiyu Toolbox core/model/*.pth
+**/*.blend
+**/*.blend1
 
 # Portable Build
 yiyu_toolbox_portable/
