@@ -1,0 +1,16 @@
+﻿卸载之前的版本
+在顶部菜单编辑(Edit)-首选项(Preference)-插件(Add-ons)-安装(Install),弹窗里选择Quad Remesher addon 1.3.zip安装
+打开Blender，在文件-用户设置-插件，即可看到安装的插件,勾选打开
+在视窗快捷键N，找到Quad Remesh，打开，点击Remesh It，会自动下载一些文件
+下载完成后关闭Blender，将QuadRemesherEngine_3里面所有的内容复制到C:\ProgramData\Exoside\QuadRemesher\Datas_Blender\，替换即可
+
+
+龋齿一号GFXCamp：http://www.gfxcamp.com/
+
+MG教程网：http://www.mgtut.com/
+
+淘宝店铺：http://gfxcampcg.taobao.com/
+
+龋齿一号新浪博客：http://blog.sina.com.cn/u/1836879691
+
+龋齿一号GFXCamp新浪微博：http://weibo.com/gfxcamp

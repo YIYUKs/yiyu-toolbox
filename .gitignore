@@ -28,5 +28,6 @@ yiyu Toolbox core/model/*.pth
 
 # Portable Build
 yiyu_toolbox_portable/
+releases/*.zip
 build_launcher/
 nuitka-crash-report.xml

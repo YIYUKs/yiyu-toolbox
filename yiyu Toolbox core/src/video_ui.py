@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, pyqtSlot
 from video_splitter import VideoSplitterThread
+from config_manager import ConfigManager
 import os
 
 class VideoSplitterWidget(QWidget):
@@ -76,8 +77,10 @@ class VideoSplitterWidget(QWidget):
         self.video_path = None
 
     def select_folder(self):
-        path = QFileDialog.getExistingDirectory(self, "选择包含视频的文件夹")
+        last_path = ConfigManager.get_last_path()
+        path = QFileDialog.getExistingDirectory(self, "选择包含视频的文件夹", last_path)
         if path:
+            ConfigManager.save_last_path(path)
             self.video_path = path # Renaming logic concept: this is now folder_path
             self.lbl_path.setText(path)
             self.log(f"已选择文件夹: {path}")
@@ -102,7 +105,6 @@ class VideoSplitterWidget(QWidget):
         self.log(f"开始处理... 模式: {mode}")
         self.btn_start.setEnabled(False)
         self.btn_select.setEnabled(False)
-        self.pbar.setValue(0)
 
         self.worker = VideoSplitterThread(self.video_path, mode)
         self.worker.log_signal.connect(self.log)

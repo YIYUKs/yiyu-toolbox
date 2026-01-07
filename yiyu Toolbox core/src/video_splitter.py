@@ -110,9 +110,10 @@ class VideoSplitterThread(QThread):
                 finally:
                     if video_stream:
                         try:
-                            if hasattr(video_stream, 'release'): video_stream.release()
-                            elif hasattr(video_stream, 'close'): video_stream.close()
-                        except: pass
+                            video_stream.close()
+                        except:
+                            pass
+                        video_stream = None
                 
                 self.log_signal.emit(f"Detected {len(scene_list)} scenes.")
 
@@ -133,6 +134,7 @@ class VideoSplitterThread(QThread):
                 
                 total_frames = int(cap_temp.get(cv2.CAP_PROP_FRAME_COUNT))
                 cap_temp.release()
+                cap_temp = None
 
                 if total_frames > 0:
                     count = 20
@@ -177,47 +179,43 @@ class VideoSplitterThread(QThread):
 
             # 5. Extract Frames
             cap = cv2.VideoCapture(video_path)
-            if not cap.isOpened():
-                 self.log_signal.emit("OpenCV failed to open video.")
-                 return False
+            try:
+                if not cap.isOpened():
+                     self.log_signal.emit("OpenCV failed to open video.")
+                     return False
 
-            total_targets = len(target_frames)
-            
-            mode_cn_map = {'start': '开始', 'middle': '中间', 'end': '结尾', 'average': '均分'}
-            mode_cn = mode_cn_map.get(self.position, self.position)
-
-            for i, target_frame in enumerate(target_frames):
-                if not self.is_running: break
-
-                cap.set(cv2.CAP_PROP_POS_FRAMES, target_frame)
-                ret, frame = cap.read()
+                total_targets = len(target_frames)
                 
-                if ret and frame is not None:
-                    index_str = f"{i+1:05d}"
-                    suffix_part = f"_{index_str}_{mode_cn}.jpg"
+                mode_cn_map = {'start': '开始', 'middle': '中间', 'end': '结尾', 'average': '均分'}
+                mode_cn = mode_cn_map.get(self.position, self.position)
+
+                for i, target_frame in enumerate(target_frames):
+                    if not self.is_running: break
+
+                    cap.set(cv2.CAP_PROP_POS_FRAMES, target_frame)
+                    ret, frame = cap.read()
                     
-                    current_path_len = len(output_dir) + 1 + len(suffix_part)
-                    max_video_name_len = 250 - current_path_len
-                    safe_video_name = video_name[:max_video_name_len] if max_video_name_len > 0 else "v"
+                    if ret and frame is not None:
+                        index_str = f"{i+1:05d}"
+                        suffix_part = f"_{index_str}_{mode_cn}.jpg"
+                        
+                        current_path_len = len(output_dir) + 1 + len(suffix_part)
+                        max_video_name_len = 250 - current_path_len
+                        safe_video_name = video_name[:max_video_name_len] if max_video_name_len > 0 else "v"
 
-                    file_path = os.path.join(output_dir, f"{safe_video_name}{suffix_part}")
-                    self.save_frame_safe(frame, file_path)
-                
-                # Progress (Per Video)
-                if total_targets > 0:
-                    prog = int(((i + 1) / total_targets) * 100)
-                    self.progress_signal.emit(prog, total_val)
-            
-            cap.release()
+                        file_path = os.path.join(output_dir, f"{safe_video_name}{suffix_part}")
+                        self.save_frame_safe(frame, file_path)
+                    
+                    # Progress (Per Video)
+                    if total_targets > 0:
+                        prog = int(((i + 1) / total_targets) * 100)
+                        self.progress_signal.emit(prog, total_val)
+            finally:
+                cap.release()
+                cap = None
 
             # 6. Move Video File (Optional)
-            # User requested "save all video processing results".
-            # Usually this implies snapshots. Moving the source video might not be desired if it's "processing results".
-            # BUT the original logic moved the video. 
-            # If we move the video, it leaves the source folder. 
-            # User said "save all video processing results" in a new folder. 
-            # It's safer to COPY or Move. Original logic was MOVE. 
-            # I will stick to MOVE to match original tool behavior, but into the new deep folder.
+            time.sleep(0.5)
             try:
                  dst_path = os.path.join(output_dir, os.path.basename(video_path))
                  if os.path.exists(dst_path):

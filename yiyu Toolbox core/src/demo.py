@@ -57,6 +57,7 @@ from PyQt5.QtGui import QPixmap, QIcon
 import cv2, numpy as np
 from contact import Ui_contact
 from style_manager import StyleManager
+from config_manager import ConfigManager
 
 # Heavy imports deferred for lazy loading
 # from video_ui import VideoSplitterWidget
@@ -238,8 +239,11 @@ class MainWindow(QWidget):
 
     @QtCore.pyqtSlot()
     def start_batch_mode(self):
-        folder_path = QFileDialog.getExistingDirectory(self, "选择要处理的文件夹")
+        last_path = ConfigManager.get_last_path()
+        folder_path = QFileDialog.getExistingDirectory(self, "选择要处理的文件夹", last_path)
         if not folder_path: return
+        
+        ConfigManager.save_last_path(folder_path)
         
         image_files = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp'))]
         if not image_files:
@@ -277,8 +281,10 @@ class MainWindow(QWidget):
 
     @QtCore.pyqtSlot()
     def on_btn_org_clicked(self):
-        path, _ = QFileDialog.getOpenFileName(self, "打开文件", ".", "图片文件 (*.jpg *.png *.jpeg)")
+        last_path = ConfigManager.get_last_path()
+        path, _ = QFileDialog.getOpenFileName(self, "打开文件", last_path, "图片文件 (*.jpg *.png *.jpeg)")
         if path:
+            ConfigManager.save_last_path(path)
             self.load_image_from_path(path)
             self.batch_folder_path = None
 

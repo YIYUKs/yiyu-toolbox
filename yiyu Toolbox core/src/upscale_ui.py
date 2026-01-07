@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, pyqtSlot
 from upscale_processor import UpscaleThread
+from config_manager import ConfigManager
 import os
 
 class UpscaleWidget(QWidget):
@@ -101,16 +102,20 @@ class UpscaleWidget(QWidget):
         layout.addWidget(self.log_text)
 
     def select_file(self):
-        path, _ = QFileDialog.getOpenFileName(self, "选择图片", ".", "图片文件 (*.jpg *.png *.jpeg *.bmp)")
+        last_path = ConfigManager.get_last_path()
+        path, _ = QFileDialog.getOpenFileName(self, "选择图片", last_path, "图片文件 (*.jpg *.png *.jpeg *.bmp)")
         if path:
+            ConfigManager.save_last_path(path)
             self.input_path = path
             self.is_folder = False
             self.lbl_path.setText(f"已选择单图: {path}")
             self.log(f"已加载单图: {path}")
 
     def select_folder(self):
-        path = QFileDialog.getExistingDirectory(self, "选择包含图片的文件夹")
+        last_path = ConfigManager.get_last_path()
+        path = QFileDialog.getExistingDirectory(self, "选择包含图片的文件夹", last_path)
         if path:
+            ConfigManager.save_last_path(path)
             self.input_path = path
             self.is_folder = True
             self.lbl_path.setText(f"已选择文件夹: {path}")
@@ -131,7 +136,6 @@ class UpscaleWidget(QWidget):
         self.btn_start.setEnabled(False)
         self.btn_select_file.setEnabled(False)
         self.btn_select_folder.setEnabled(False)
-        self.pbar.setValue(0)
 
         self.worker = UpscaleThread(self.input_path, self.is_folder, scale=scale, model_type=model_type)
         self.worker.progress_signal.connect(self.update_progress)

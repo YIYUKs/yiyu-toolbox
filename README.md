@@ -14,13 +14,16 @@ Future features will be integrated based on personal requirements.
     - **Consistent Layout**: Unified vertical flow across all modules for a seamless user experience.
 - **Portability**: Supports packaging as a fully standalone "Green Version" EXE.
 
-## 🚀 Release v1.0 (Latest)
+## 🚀 Release v1.0.1 (Latest)
 
-**Version 1.0.0 (2026-01-02)**
-- **UI Redesign**: Brand new Dark Mode skin with a dedicated `StyleManager`.
-- **Feedback Loop**: Introduced the Dual Progress Bar mechanism for better task transparency.
-- **Stability Fixes**: Refined portable build scripts to resolve DLL relocation issues (WinError 1114).
-- **UX Refinement**: Streamlined the Watermark tab layout for more intuitive operation.
+**Version 1.0.1 (2026-01-07)**
+- **Directory Memory**: Globally remembers the last used folder for all selection dialogs.
+- **Stability Enhancement**: Fixed various crashes and file occupancy errors in the Video Splitter module.
+- **Build Hardening**: Improved portable build scripts with better compiler detection and error logging.
+
+**Legacy Version 1.0.0 (2026-01-02)**
+- **UI Redesign**: Brand new Dark Mode skin and `StyleManager`.
+- **Feedback Loop**: Dual Progress Bar mechanism for task transparency.
 
 ## Installation & Run
 
