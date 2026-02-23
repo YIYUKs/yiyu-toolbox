@@ -2,8 +2,9 @@
 chcp 65001 >nul
 title Yiyu Toolbox - Portable Build
 
-set "CORE_DIR=..\yiyu Toolbox core"
-set "PROJ_DIR=..\releases\yiyu_toolbox_portable"
+cd /d "%~dp0.."
+set "CORE_DIR=yiyu Toolbox core"
+set "PROJ_DIR=releases\yiyu_toolbox_portable"
 set "EXE_NAME=乙羽的工具箱.exe"
 
 echo [Step 1] Checking output directory...

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-02-23
+
+### Added
+- **GIF Compression**: Added a comprehensive new tool tab powered by `gifsicle`.
+  - Replicates popular online optimization (Lossy, Color Table Elimination, Shrink Scale).
+  - Employs a custom logarithmic algorithm to emulate "Fuzz" pixel merging in standard `gifsicle`.
+  - Fully integrated with the dark mode UI matching existing upscale options.
+
 ## [1.0.1] - 2026-01-07
 
 ### Added

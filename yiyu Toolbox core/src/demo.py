@@ -124,6 +124,13 @@ class MainWindow(QWidget):
         self.tab_video_layout.setContentsMargins(0, 0, 0, 0)
         self.tabs.addTab(self.tab_video_container, "截取视频分镜")
         
+        # --- Tab 5: GIF Compressor (Lazy) ---
+        self.tab_gif_loaded = False
+        self.tab_gif_container = QWidget()
+        self.tab_gif_layout = QVBoxLayout(self.tab_gif_container)
+        self.tab_gif_layout.setContentsMargins(0, 0, 0, 0)
+        self.tabs.addTab(self.tab_gif_container, "GIF压缩")
+        
         # --- Dual Progress Bar Section ---
         self.progress_container = QWidget()
         self.progress_layout = QVBoxLayout(self.progress_container)
@@ -200,6 +207,12 @@ class MainWindow(QWidget):
                  self.tab_video_widget = VideoSplitterWidget()
                  self.tab_video_layout.addWidget(self.tab_video_widget)
                  self.tab_video_loaded = True
+                 
+            elif index == 4 and not self.tab_gif_loaded:
+                 from gif_ui import GifCompressWidget
+                 self.tab_gif_widget = GifCompressWidget()
+                 self.tab_gif_layout.addWidget(self.tab_gif_widget)
+                 self.tab_gif_loaded = True
         except Exception as e:
             QMessageBox.critical(self, "组件加载故障", f"初始化标签页时发生错误：\n{str(e)}\n\n这可能是由于依赖库损坏或环境配置问题导致的。")
 

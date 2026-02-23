@@ -14,7 +14,14 @@ Future features will be integrated based on personal requirements.
     - **Consistent Layout**: Unified vertical flow across all modules for a seamless user experience.
 - **Portability**: Supports packaging as a fully standalone "Green Version" EXE.
 
-## 🚀 Release v1.0.1 (Latest)
+## 🚀 Release v1.1.0 (Latest)
+
+**Version 1.1.0 (2026-02-23)**
+- **GIF Compression Tool**: A brand new tab added for heavy GIF compression.
+- **Dynamic Optimization**: Integrates `gifsicle` with Proportional Scaling, Lossy levels, and Fuzz (Color approximation) to cut down file sizes significantly.
+- **Clean Installation**: Core binaries are securely downloaded on-demand to keep the portable size minimal.
+
+## 📦 Legacy Versions
 
 **Version 1.0.1 (2026-01-07)**
 - **Directory Memory**: Globally remembers the last used folder for all selection dialogs.
